@@ -4,6 +4,12 @@
 #include <math.h>
 #include "common.h"
 
+#define density 0.0005
+#define mass 0.01
+#define cutoff 0.01
+#define min_r (cutoff/100)
+#define dt 0.0005
+
 //
 //  benchmarking program
 //
@@ -11,6 +17,45 @@ int main( int argc, char **argv )
 {    
     int navg,nabsavg=0;
     double davg,dmin, absmin=1.0, absavg=0.0;
+	
+double size = sqrt( density*n );
+int bpr = ceil(size/cutoff);
+int numbins = bpr*bpr;
+vector<particle_t*> *bins = new vector<particle_t*>[numbins];
+	
+for( int p = 0; p < n; p++ )
+{
+particles[p].ax = particles[p].ay = 0;
+//...
+}
+	
+	
+int cbin = binNum( particles[p], bpr );
+int lowi = -1, highi = 1, lowj = -1, highj = 1;
+if (cbin < bpr)
+ lowj = 0;
+if (cbin % bpr == 0)
+ lowi = 0;
+if (cbin % bpr == (bpr-1))
+ highi = 0;
+if (cbin >= bpr*(bpr-1))
+ highj = 0;
+	
+// calculate particle's bin number
+int binNum(particle_t &p, int bpr)
+{
+ return ( floor(p.x/cutoff) + bpr*floor(p.y/cutoff) );
+}
+	
+for (int i = lowi; i <= highi; i++)
+ for (int j = lowj; j <= highj; j++)
+ {
+ int nbin = cbin + i + bpr*j;
+ for (int k = 0; k < bins[nbin].size(); k++ )
+ apply_force( particles[p], *bins[nbin][k], &dmin, &davg, &navg);
+ }
+}
+
 
     if( find_option( argc, argv, "-h" ) >= 0 )
     {
