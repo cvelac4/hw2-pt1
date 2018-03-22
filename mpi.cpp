@@ -7,6 +7,20 @@
 //
 //  benchmarking program
 //
+
+MPI_Scatterv( particles, partition_sizes, partition_offsets, PARTICLE, local,
+nlocal, PARTICLE, 0, MPI_COMM_WORLD );
+
+MPI_Allgatherv( local, nlocal, PARTICLE, particles, partition_sizes,
+partition_offsets, PARTICLE, MPI_COMM_WORLD );
+
+MPI_Request request;
+MPI_Isend(&buf,count,MPI_INT,source_rank,source_rank,MPI_COMM_WORLD,&request);
+
+MPI_Request request;
+MPI_Status status;
+MPI_Wait(&request,&status);
+
 int main( int argc, char **argv )
 {    
     int navg, nabsavg=0;
