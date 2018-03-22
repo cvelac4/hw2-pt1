@@ -15,6 +15,58 @@ pthread_barrier_t barrier;
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 double gabsmin=1.0,gabsavg=0.0;
 
+int *thread_ids = (int *) malloc( n_threads * sizeof( int ) );
+ for( int i = 0; i < n_threads; i++ )
+ thread_ids[i] = i;
+
+pthread_t *threads = (pthread_t *) malloc( n_threads * sizeof( pthread_t ) );
+
+for( int i = 1; i < n_threads; i++ )
+ P( pthread_create( &threads[i], &attr, thread_routine, &thread_ids[i] ) );
+
+thread_routine( &thread_ids[0] );
+
+for( int i = 1; i < n_threads; i++ )
+ P( pthread_join( threads[i], NULL ) );
+
+vector<particle_t*> *bins;
+int bpr, numbins;
+pthread_mutex_t *binsMutex;
+
+bins = new vector<particle_t*>[numbins];
+binsMutex = new pthread_mutex_t[numbins];
+for (int m = 0; m < numbins; m++)
+ pthread_mutex_init(&binsMutex[m],NULL);
+
+int bins_per_thread = (numbins + n_threads - 1) / n_threads;
+int first_bin = min( thread_id * bins_per_thread, numbins );
+int last_bin = min( (thread_id+1) * bins_per_thread, numbins );
+
+for( int p = first; p < last; p++ )
+ {
+ particles[p].ax = particles[p].ay = 0;
+
+ // find current particle's bin, handle boundaries
+ int cbin = binNum( particles[p] );
+ int lowi = -1, highi = 1, lowj = -1, highj = 1;
+ if (cbin < bpr)
+ lowj = 0;
+ if (cbin % bpr == 0)
+ lowi = 0;
+ if (cbin % bpr == (bpr-1))
+ highi = 0;
+ if (cbin >= bpr*(bpr-1))
+ highj = 0;
+ for (int i = lowi; i <= highi; i++)
+ for (int j = lowj; j <= highj; j++)
+ {
+ int nbin = cbin + i + bpr*j;
+ for (int k = 0; k < bins[nbin].size(); k++)
+ apply_force( particles[p], *bins[nbin][k], &dmin ,&davg,&navg);
+ }
+ }
+
+
 //
 //  check that pthreads routine call was successful
 //
