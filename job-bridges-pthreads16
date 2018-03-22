@@ -7,3 +7,6 @@
 #SBATCH -t 00:10:00     
 #SBATCH -N 1         
 ./pthreads -p 16 -n 1000 -o pthreads.txt
+n_threads = read_int( argc, argv, "-p", 2 );
+n = read_int( argc, argv, "-n", 1000 );
+
