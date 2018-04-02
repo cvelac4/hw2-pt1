@@ -17,7 +17,7 @@ partition_offsets, PARTICLE, MPI_COMM_WORLD );
 MPI_Request request;
 MPI_Isend(&buf,count,MPI_INT,source_rank,source_rank,MPI_COMM_WORLD,&request);
 
-MPI_Request request;
+
 MPI_Status status;
 MPI_Wait(&request,&status);
 
@@ -27,6 +27,10 @@ int main( int argc, char **argv )
     double dmin, absmin=1.0,davg,absavg=0.0;
     double rdavg,rdmin;
     int rnavg; 
+    
+    int MPI_Inlt(int*argc, char***argv);
+    int MPI_Comm_size(MPI_Comm comm, int * size);
+    int MPI_Comm_rank(MPI_Comm comm, int*rank)
  
     //
     //  process command line parameters
