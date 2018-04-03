@@ -7,30 +7,12 @@
 //
 //  benchmarking program
 //
-
-MPI_Scatterv( particles, partition_sizes, partition_offsets, PARTICLE, local,
-nlocal, PARTICLE, 0, MPI_COMM_WORLD );
-
-MPI_Allgatherv( local, nlocal, PARTICLE, particles, partition_sizes,
-partition_offsets, PARTICLE, MPI_COMM_WORLD );
-
-MPI_Request request;
-MPI_Isend(&buf,count,MPI_INT,source_rank,source_rank,MPI_COMM_WORLD,&request);
-
-
-MPI_Status status;
-MPI_Wait(&request,&status);
-
 int main( int argc, char **argv )
 {    
     int navg, nabsavg=0;
     double dmin, absmin=1.0,davg,absavg=0.0;
     double rdavg,rdmin;
     int rnavg; 
-    
-    int MPI_Inlt(int*argc, char***argv);
-    int MPI_Comm_size(MPI_Comm comm, int * size);
-    int MPI_Comm_rank(MPI_Comm comm, int*rank)
  
     //
     //  process command line parameters
@@ -57,6 +39,67 @@ int main( int argc, char **argv )
     MPI_Init( &argc, &argv );
     MPI_Comm_size( MPI_COMM_WORLD, &n_proc );
     MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    
+MPI_Scatterv( particles, partition_sizes, partition_offsets, PARTICLE, local,
+nlocal, PARTICLE, 0, MPI_COMM_WORLD );
+    
+    int particles;
+    int partition_sizes = 86;
+    int partition_offsets = 64;
+    int PARTICLE;
+    int local = PARTICLE;
+    int nlocal = 86;
+    return 0;
+    
+     
+MPI_Allgatherv( local, nlocal, PARTICLE, particles, partition_sizes,
+partition_offsets, PARTICLE, MPI_COMM_WORLD );
+    
+    int local[86];
+    int nlocal = 64;
+    int PARTICLE;
+    int particles = local;
+    int partition_sizes = 64;
+    int partition_offsets = 86;
+    return PARTICLE;
+    
+    
+    MPI_Reduce(particle,particle_size,retult,PARTICLE,MPI_COM_WORLD);
+    int particle;
+    int particle_size[86];
+    int result = particle * particle_size;
+    return result;
+    
+    MPI_Barrier();
+    
+    
+    MPI_Request request;
+    MPI_Irecv(&buf,count,MPI_INT,source_rank,source_rank,MPI_COMM_WORLD,&request);
+    
+    int buf;
+    int count = 86;
+    int MPI_INT = buf;
+    int source_rank = MPI_INT;
+    //int source_rank;
+    int request = source_rank;
+    return request;
+    
+    
+    MPI_Request request;
+    MPI_Isend(&buf,count,MPI_INT,source_rank,source_rank,MPI_COMM_WORLD,&request);
+    
+    int buf;
+    int count = 86;
+    int MPI_INT = buf;
+    int source_rank = MPI_INT;
+    int request = source_rank;
+    return request;
+    
+     
+    MPI_Request request;
+    MPI_Status status;
+    MPI_Wait(&request,&status);
+    
     
     //
     //  allocate generic resources
